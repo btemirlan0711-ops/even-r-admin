@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open Site",
+            "url": "http://127.0.0.1:8080",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open Admin Panel",
+            "url": "http://127.0.0.1:8080/admin/admin.html",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}

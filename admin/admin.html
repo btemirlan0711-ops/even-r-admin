@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Even Roads — Панель управления</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23f59e0b'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%230a0a0f' font-family='Inter,sans-serif' font-weight='800' font-size='16'>ER</text></svg>">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div class="toast-container"></div>
+
+  <!-- Login Screen -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">ER</div>
+      <h1 class="login-title">Панель управления</h1>
+      <p class="login-subtitle">Введите пароль для доступа к админ-панели</p>
+      <form class="login-form" id="login-form">
+        <div class="form-group">
+          <label for="login-password">Пароль</label>
+          <input type="password" id="login-password" placeholder="Введите пароль" required autocomplete="current-password">
+        </div>
+        <p class="login-error" id="login-error">Неверный пароль</p>
+        <button type="submit" class="login-btn">Войти</button>
+      </form>
+      <a href="../index.html" class="login-back">← Вернуться на сайт</a>
+    </div>
+  </div>
+
+  <!-- Admin Layout -->
+  <div class="admin-layout" id="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">ER</div>
+        <div class="sidebar-brand">
+          <span class="sidebar-brand-name">EVEN ROADS</span>
+          <span class="sidebar-brand-sub">Админ-панель</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Главное</div>
+        <button class="sidebar-link active" data-panel="panel-dashboard">
+          <span class="icon">📊</span>
+          <span class="label">Дашборд</span>
+        </button>
+        <button class="sidebar-link" data-panel="panel-submissions">
+          <span class="icon">📨</span>
+          <span class="label">Заявки</span>
+          <span class="badge" id="submissions-badge" style="display:none">0</span>
+        </button>
+
+        <div class="sidebar-section-title">Контент сайта</div>
+        <button class="sidebar-link" data-panel="panel-hero">
+          <span class="icon">🏠</span>
+          <span class="label">Главный экран</span>
+        </button>
+        <button class="sidebar-link" data-panel="panel-stats">
+          <span class="icon">📈</span>
+          <span class="label">Статистика</span>
+        </button>
+        <button class="sidebar-link" data-panel="panel-about">
+          <span class="icon">ℹ️</span>
+          <span class="label">О компании</span>
+        </button>
+        <button class="sidebar-link" data-panel="panel-services">
+          <span class="icon">🔧</span>
+          <span class="label">Услуги</span>
+        </button>
+        <button class="sidebar-link" data-panel="panel-projects">
+          <span class="icon">🏗️</span>
+          <span class="label">Проекты</span>
+        </button>
+        <button class="sidebar-link" data-panel="panel-advantages">
+          <span class="icon">⭐</span>
+          <span class="label">Преимущества</span>
+        </button>
+        <button class="sidebar-link" data-panel="panel-contact">
+          <span class="icon">📞</span>
+          <span class="label">Контакты</span>
+        </button>
+
+        <div class="sidebar-section-title">Система</div>
+        <button class="sidebar-link" data-panel="panel-settings">
+          <span class="icon">⚙️</span>
+          <span class="label">Настройки</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" id="logout-btn">
+          <span>🚪</span> Выйти
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <h2 class="topbar-title">Дашборд</h2>
+        <div class="topbar-actions">
+          <a href="../index.html" class="topbar-btn topbar-btn-outline" target="_blank">👁 Открыть сайт</a>
+          <button class="topbar-btn topbar-btn-primary" id="sidebar-toggle" style="display:none">☰ Меню</button>
+        </div>
+      </div>
+
+      <div class="admin-content">
+
+        <!-- ===== DASHBOARD PANEL ===== -->
+        <div class="admin-panel active" id="panel-dashboard">
+          <div class="dashboard-cards">
+            <div class="dash-card">
+              <div class="dash-card-icon primary">📨</div>
+              <div class="dash-card-value" id="dash-submissions">0</div>
+              <div class="dash-card-label">Всего заявок</div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-icon accent">🆕</div>
+              <div class="dash-card-value" id="dash-new">0</div>
+              <div class="dash-card-label">Новых заявок</div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-icon info">🔧</div>
+              <div class="dash-card-value" id="dash-services">0</div>
+              <div class="dash-card-label">Услуг на сайте</div>
+            </div>
+            <div class="dash-card">
+              <div class="dash-card-icon danger">🏗️</div>
+              <div class="dash-card-value" id="dash-projects">0</div>
+              <div class="dash-card-label">Проектов</div>
+            </div>
+          </div>
+
+          <div class="dash-recent">
+            <div class="dash-recent-header">
+              <h3>Последние заявки</h3>
+              <a id="see-all-submissions">Показать все →</a>
+            </div>
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Имя</th>
+                  <th>Телефон</th>
+                  <th>Email</th>
+                  <th>Статус</th>
+                  <th>Дата</th>
+                </tr>
+              </thead>
+              <tbody id="recent-submissions-body">
+                <tr><td colspan="5" style="text-align:center; padding:40px; color:var(--admin-text-muted);">Заявок пока нет</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ===== SUBMISSIONS PANEL ===== -->
+        <div class="admin-panel" id="panel-submissions">
+          <table class="admin-table" style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--admin-radius); overflow: hidden;">
+            <thead>
+              <tr>
+                <th>Имя</th>
+                <th>Телефон</th>
+                <th>Email</th>
+                <th>Сообщение</th>
+                <th>Статус</th>
+                <th>Дата</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="submissions-table-body">
+              <tr><td colspan="7" style="text-align:center; padding:60px; color:var(--admin-text-muted);">Загрузка...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ===== HERO EDITOR ===== -->
+        <div class="admin-panel" id="panel-hero">
+          <div class="edit-section">
+            <div class="edit-section-header open">
+              <h3>🏠 Главный экран (Hero)</h3>
+              <span class="toggle-icon">▼</span>
+            </div>
+            <div class="edit-section-body open">
+              <div class="admin-form-group">
+                <label for="hero-badge">Бейдж (верхняя надпись)</label>
+                <input type="text" id="hero-badge" placeholder="Казахстан · Астана · с 2020 года">
+              </div>
+              <div class="admin-form-group">
+                <label for="hero-title">Заголовок (поддерживает HTML)</label>
+                <textarea id="hero-title" rows="3" placeholder="Строим дороги..."></textarea>
+                <p class="admin-form-hint">Используйте &lt;span class="highlight"&gt;текст&lt;/span&gt; для выделения и &lt;br&gt; для переноса строки</p>
+              </div>
+              <div class="admin-form-group">
+                <label for="hero-description">Описание</label>
+                <textarea id="hero-description" rows="3" placeholder="ТОО «Even Roads» — надёжный партнёр..."></textarea>
+              </div>
+              <div class="form-actions">
+                <button class="save-btn" id="save-hero">💾 Сохранить</button>
+                <button class="reset-btn" id="reset-hero">↺ Сбросить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== STATS EDITOR ===== -->
+        <div class="admin-panel" id="panel-stats">
+          <div class="edit-section">
+            <div class="edit-section-header open">
+              <h3>📈 Блок статистики</h3>
+              <span class="toggle-icon">▼</span>
+            </div>
+            <div class="edit-section-body open">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div style="padding: 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: var(--admin-radius-sm);">
+                  <p style="font-size: 0.78rem; font-weight: 700; color: var(--admin-primary); margin-bottom: 12px;">Показатель 1</p>
+                  <div class="admin-form-group">
+                    <label for="stat-value-0">Значение</label>
+                    <input type="number" id="stat-value-0">
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-group">
+                      <label for="stat-suffix-0">Суффикс</label>
+                      <input type="text" id="stat-suffix-0" placeholder="+, %, км">
+                    </div>
+                    <div class="admin-form-group">
+                      <label for="stat-label-0">Подпись</label>
+                      <input type="text" id="stat-label-0">
+                    </div>
+                  </div>
+                </div>
+                <div style="padding: 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: var(--admin-radius-sm);">
+                  <p style="font-size: 0.78rem; font-weight: 700; color: var(--admin-primary); margin-bottom: 12px;">Показатель 2</p>
+                  <div class="admin-form-group">
+                    <label for="stat-value-1">Значение</label>
+                    <input type="number" id="stat-value-1">
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-group">
+                      <label for="stat-suffix-1">Суффикс</label>
+                      <input type="text" id="stat-suffix-1">
+                    </div>
+                    <div class="admin-form-group">
+                      <label for="stat-label-1">Подпись</label>
+                      <input type="text" id="stat-label-1">
+                    </div>
+                  </div>
+                </div>
+                <div style="padding: 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: var(--admin-radius-sm);">
+                  <p style="font-size: 0.78rem; font-weight: 700; color: var(--admin-primary); margin-bottom: 12px;">Показатель 3</p>
+                  <div class="admin-form-group">
+                    <label for="stat-value-2">Значение</label>
+                    <input type="number" id="stat-value-2">
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-group">
+                      <label for="stat-suffix-2">Суффикс</label>
+                      <input type="text" id="stat-suffix-2">
+                    </div>
+                    <div class="admin-form-group">
+                      <label for="stat-label-2">Подпись</label>
+                      <input type="text" id="stat-label-2">
+                    </div>
+                  </div>
+                </div>
+                <div style="padding: 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--admin-border); border-radius: var(--admin-radius-sm);">
+                  <p style="font-size: 0.78rem; font-weight: 700; color: var(--admin-primary); margin-bottom: 12px;">Показатель 4</p>
+                  <div class="admin-form-group">
+                    <label for="stat-value-3">Значение</label>
+                    <input type="number" id="stat-value-3">
+                  </div>
+                  <div class="admin-form-row">
+                    <div class="admin-form-group">
+                      <label for="stat-suffix-3">Суффикс</label>
+                      <input type="text" id="stat-suffix-3">
+                    </div>
+                    <div class="admin-form-group">
+                      <label for="stat-label-3">Подпись</label>
+                      <input type="text" id="stat-label-3">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="save-btn" id="save-stats">💾 Сохранить</button>
+                <button class="reset-btn" id="reset-stats">↺ Сбросить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ABOUT EDITOR ===== -->
+        <div class="admin-panel" id="panel-about">
+          <div class="edit-section">
+            <div class="edit-section-header open">
+              <h3>ℹ️ Секция «О компании»</h3>
+              <span class="toggle-icon">▼</span>
+            </div>
+            <div class="edit-section-body open">
+              <div class="admin-form-group">
+                <label for="about-title">Заголовок секции</label>
+                <input type="text" id="about-title">
+              </div>
+              <div class="admin-form-group">
+                <label for="about-text1">Первый абзац</label>
+                <textarea id="about-text1" rows="4"></textarea>
+              </div>
+              <div class="admin-form-group">
+                <label for="about-text2">Второй абзац</label>
+                <textarea id="about-text2" rows="4"></textarea>
+              </div>
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label for="about-exp-number">Бейдж — число</label>
+                  <input type="text" id="about-exp-number" placeholder="5+">
+                </div>
+                <div class="admin-form-group">
+                  <label for="about-exp-text">Бейдж — текст</label>
+                  <input type="text" id="about-exp-text" placeholder="лет опыта">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="save-btn" id="save-about">💾 Сохранить</button>
+                <button class="reset-btn" id="reset-about">↺ Сбросить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SERVICES EDITOR ===== -->
+        <div class="admin-panel" id="panel-services">
+          <div id="services-editor">
+            <!-- Dynamically rendered -->
+          </div>
+          <div class="form-actions" style="border-top: none; padding-top: 0;">
+            <button class="save-btn" id="save-services">💾 Сохранить все услуги</button>
+            <button class="reset-btn" id="reset-services">↺ Сбросить</button>
+          </div>
+        </div>
+
+        <!-- ===== PROJECTS EDITOR ===== -->
+        <div class="admin-panel" id="panel-projects">
+          <div id="projects-editor">
+            <!-- Dynamically rendered -->
+          </div>
+          <div class="form-actions" style="border-top: none; padding-top: 0;">
+            <button class="save-btn" id="save-projects">💾 Сохранить все проекты</button>
+            <button class="reset-btn" id="reset-projects">↺ Сбросить</button>
+          </div>
+        </div>
+
+        <!-- ===== ADVANTAGES EDITOR ===== -->
+        <div class="admin-panel" id="panel-advantages">
+          <div id="advantages-editor">
+            <!-- Dynamically rendered -->
+          </div>
+          <div class="form-actions" style="border-top: none; padding-top: 0;">
+            <button class="save-btn" id="save-advantages">💾 Сохранить преимущества</button>
+            <button class="reset-btn" id="reset-advantages">↺ Сбросить</button>
+          </div>
+        </div>
+
+        <!-- ===== CONTACT EDITOR ===== -->
+        <div class="admin-panel" id="panel-contact">
+          <div class="edit-section">
+            <div class="edit-section-header open">
+              <h3>📞 Контактные данные</h3>
+              <span class="toggle-icon">▼</span>
+            </div>
+            <div class="edit-section-body open">
+              <div class="admin-form-group">
+                <label for="contact-address">Адрес</label>
+                <input type="text" id="contact-address">
+              </div>
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label for="contact-phone">Телефон</label>
+                  <input type="text" id="contact-phone">
+                </div>
+                <div class="admin-form-group">
+                  <label for="contact-email">Email</label>
+                  <input type="email" id="contact-email">
+                </div>
+              </div>
+              <div class="admin-form-group">
+                <label for="contact-hours">Режим работы</label>
+                <input type="text" id="contact-hours">
+              </div>
+              <div class="form-actions">
+                <button class="save-btn" id="save-contact">💾 Сохранить</button>
+                <button class="reset-btn" id="reset-contact">↺ Сбросить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SETTINGS PANEL ===== -->
+        <div class="admin-panel" id="panel-settings">
+          <div class="edit-section">
+            <div class="edit-section-header open">
+              <h3>🔒 Изменить пароль</h3>
+              <span class="toggle-icon">▼</span>
+            </div>
+            <div class="edit-section-body open">
+              <div class="admin-form-group">
+                <label for="settings-password">Новый пароль</label>
+                <input type="password" id="settings-password" placeholder="Минимум 4 символа">
+              </div>
+              <div class="admin-form-group">
+                <label for="settings-password-confirm">Подтвердите пароль</label>
+                <input type="password" id="settings-password-confirm" placeholder="Повторите пароль">
+              </div>
+              <div class="form-actions">
+                <button class="save-btn" id="save-password">💾 Изменить пароль</button>
+              </div>
+              <p class="admin-form-hint" style="margin-top: 12px;">Пароль по умолчанию: <strong>admin123</strong></p>
+            </div>
+          </div>
+
+          <div class="edit-section">
+            <div class="edit-section-header">
+              <h3>🗑️ Управление данными</h3>
+              <span class="toggle-icon">▼</span>
+            </div>
+            <div class="edit-section-body">
+              <p style="color: var(--admin-text-secondary); margin-bottom: 20px; font-size: 0.9rem;">
+                Здесь вы можете сбросить все настройки контента к значениям по умолчанию или удалить все заявки.
+              </p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <button class="reset-btn" id="clear-all-data" style="margin-left: 0; border-color: var(--admin-primary); color: var(--admin-primary);">
+                  ↺ Сбросить весь контент
+                </button>
+                <button class="reset-btn" id="clear-submissions" style="margin-left: 0;">
+                  🗑️ Удалить все заявки
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Submission Detail Modal -->
+  <div class="modal-overlay" id="submission-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>📨 Детали заявки</h3>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+      <div class="modal-field">
+        <div class="modal-field-label">Имя</div>
+        <div class="modal-field-value" id="modal-name"></div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-field-label">Телефон</div>
+        <div class="modal-field-value" id="modal-phone"></div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-field-label">Email</div>
+        <div class="modal-field-value" id="modal-email"></div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-field-label">Сообщение</div>
+        <div class="modal-field-value" id="modal-message"></div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-field-label">Дата</div>
+        <div class="modal-field-value" id="modal-date"></div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-field-label">Статус</div>
+        <div><span class="status-badge new" id="modal-status">Новая</span></div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-status" id="modal-toggle-status">🔄 Сменить статус</button>
+        <button class="modal-btn modal-btn-delete" id="modal-delete">🗑️ Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
