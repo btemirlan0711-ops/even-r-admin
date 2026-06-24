@@ -1,5 +1,10 @@
 
 // ===== EVEN ROADS - Main JavaScript =====
+
+// ===== GOOGLE SHEETS — вставь сюда URL из Google Apps Script =====
+// Инструкция: откройте файл google-apps-script.js и следуйте шагам
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzxJbRyKP2-Ucj7afJydDpIwp3sOFZF8s0uK1OFJFBE0UkuLeUjUuZ1bj8CdxX1wnGCsg/exec';
+
 // ===== Apply theme as early as possible to avoid screen flash =====
 (function() {
   const currentTheme = localStorage.getItem('theme') || 'dark';
@@ -38,9 +43,9 @@ const DataManager = {
       { icon: '📐', title: 'Проектирование', description: 'Разработка проектно-сметной документации, проведение инженерных изысканий и авторский надзор за строительством дорожных объектов.' }
     ],
     projects: [
-      { image: 'assets/images/project-highway.png', category: 'Автомагистраль', title: 'Реконструкция трассы Астана — Караганда', meta: '2023 · 45 км · Акмолинская область' },
-      { image: 'assets/images/project-construction.png', category: 'Городская дорога', title: 'Строительство дорог в районе Есиль', meta: '2024 · 12 км · г. Астана' },
-      { image: 'assets/images/project-bridge.png', category: 'Мостовое сооружение', title: 'Мостовой переход через р. Есиль', meta: '2024 · 320 м · г. Астана' }
+      { image: 'https://informburo.kz/storage/photos/156/main/4wmS48gVPyNz1l7THPc00F1SLPjPhHM137rVNRwH.webp', category: 'Автомагистраль', title: 'Реконструкция трассы Астана — Караганда', meta: '2023 · 45 км · Акмолинская область' },
+      { image: 'https://ulysmedia.kz/cache/imagine/1200/uploads/news/2024/09/08/66dd224b741e0869668341.jpg', category: 'Городская дорога', title: 'Строительство дорог в районе Есиль', meta: '2024 · 12 км · г. Астана' },
+      { image: 'https://kaztag.kz/upload/resize_cache/iblock/704/881_500_2/most.jpg?175044923097692', category: 'Мостовое сооружение', title: 'Мостовой переход через р. Есиль', meta: '2024 · 320 м · г. Астана' }
     ],
     advantages: [
       { title: 'Современное оборудование', description: 'Собственный парк современной дорожно-строительной техники ведущих мировых производителей обеспечивает высокую производительность и качество работ.' },
@@ -59,7 +64,22 @@ const DataManager = {
   get(key) {
     try {
       const data = localStorage.getItem('er_' + key);
-      return data ? JSON.parse(data) : this.defaults[key];
+      let parsed = data ? JSON.parse(data) : this.defaults[key];
+      // Migrate old default local paths or broken urls to correct remote URLs
+      if (key === 'projects' && Array.isArray(parsed)) {
+        let changed = false;
+        parsed = parsed.map((p, idx) => {
+          if (p.image && (p.image.startsWith('assets/images/') || p.image.includes('960x0/'))) {
+            p.image = this.defaults.projects[idx] ? this.defaults.projects[idx].image : p.image;
+            changed = true;
+          }
+          return p;
+        });
+        if (changed) {
+          this.set('projects', parsed);
+        }
+      }
+      return parsed;
     } catch (e) {
       return this.defaults[key];
     }
@@ -149,7 +169,10 @@ function applyDynamicContent() {
       const cat = projectCards[i].querySelector('.project-category');
       const title = projectCards[i].querySelector('.project-title');
       const meta = projectCards[i].querySelector('.project-meta');
-      if (img) img.src = proj.image;
+      if (img) {
+        img.referrerPolicy = "no-referrer";
+        img.src = proj.image;
+      }
       if (cat) cat.innerHTML = '● ' + proj.category;
       if (title) title.textContent = proj.title;
       if (meta) meta.textContent = proj.meta;
@@ -362,35 +385,73 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ===== FORM HANDLING — saves to localStorage =====
+  // ===== FORM HANDLING — отправка в Google Sheets =====
   const contactForm = document.getElementById('contact-form');
 
   if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+    contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      const formData = {
-        id: Date.now(),
-        name: document.getElementById('name').value,
-        phone: document.getElementById('phone').value,
-        email: document.getElementById('email').value || '—',
-        message: document.getElementById('message').value || '—',
-        date: new Date().toLocaleString('ru-RU'),
-        status: 'new'
-      };
-
-      DataManager.addSubmission(formData);
 
       const btn = contactForm.querySelector('.btn-submit');
       const originalText = btn.innerHTML;
-      btn.innerHTML = '✓ Заявка отправлена!';
-      btn.style.background = 'linear-gradient(135deg, #10b981, #3b82f6)';
 
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.style.background = '';
-        contactForm.reset();
-      }, 3000);
+      const formData = {
+        name: document.getElementById('name').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        email: document.getElementById('email').value.trim() || '—',
+        message: document.getElementById('message').value.trim() || '—',
+        date: new Date().toLocaleString('ru-RU')
+      };
+
+      // Показываем состояние загрузки
+      btn.disabled = true;
+      btn.innerHTML = '⏳ Отправляем...';
+      btn.style.opacity = '0.8';
+
+      const scriptUrl = GOOGLE_SCRIPT_URL;
+      const hasUrl = scriptUrl && scriptUrl !== 'ВСТАВЬ_URL_СЮДА';
+
+      try {
+        if (hasUrl) {
+          // Отправка в Google Sheets
+          await fetch(scriptUrl, {
+            method: 'POST',
+            mode: 'no-cors', // Google Apps Script требует no-cors
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+          });
+        }
+
+        // Также сохраняем локально (для совместимости с админ-панелью)
+        DataManager.addSubmission({ ...formData, id: Date.now(), status: 'new' });
+
+        // Успех
+        btn.innerHTML = '✓ Заявка отправлена!';
+        btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        btn.style.opacity = '1';
+
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.disabled = false;
+          contactForm.reset();
+        }, 2500);
+
+      } catch (err) {
+        // Ошибка сети — сохраняем локально и показываем сообщение
+        DataManager.addSubmission({ ...formData, id: Date.now(), status: 'new' });
+
+        btn.innerHTML = '✓ Заявка принята!';
+        btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        btn.style.opacity = '1';
+
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.disabled = false;
+          contactForm.reset();
+        }, 2500);
+      }
     });
   }
 
