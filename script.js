@@ -1,5 +1,13 @@
 
 // ===== EVEN ROADS - Main JavaScript =====
+// ===== Apply theme as early as possible to avoid screen flash =====
+(function() {
+  const currentTheme = localStorage.getItem('theme') || 'dark';
+  if (currentTheme === 'light') {
+    document.body.classList.add('light-theme');
+  }
+})();
+
 // ===== Data Manager - loads content from localStorage =====
 const DataManager = {
   defaults: {
@@ -188,6 +196,28 @@ function applyDynamicContent() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // ===== THEME TOGGLE =====
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) {
+    const isLight = document.body.classList.contains('light-theme');
+    themeToggle.textContent = isLight ? '🌙' : '☀️';
+    
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+      const lightActive = document.body.classList.contains('light-theme');
+      localStorage.setItem('theme', lightActive ? 'light' : 'dark');
+      themeToggle.textContent = lightActive ? '🌙' : '☀️';
+    });
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'theme') {
+        const isLight = e.newValue === 'light';
+        document.body.classList.toggle('light-theme', isLight);
+        themeToggle.textContent = isLight ? '🌙' : '☀️';
+      }
+    });
+  }
+
   // Apply dynamic content from localStorage
   applyDynamicContent();
 

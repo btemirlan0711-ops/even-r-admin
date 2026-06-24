@@ -1,4 +1,11 @@
 // ===== EVEN ROADS - Admin Panel JavaScript =====
+// ===== Apply theme as early as possible to avoid screen flash =====
+(function() {
+  const currentTheme = localStorage.getItem('theme') || 'dark';
+  if (currentTheme === 'light') {
+    document.body.classList.add('light-theme');
+  }
+})();
 
 // ===== Data Manager (shared with main site) =====
 const AdminData = {
@@ -685,13 +692,44 @@ document.addEventListener('DOMContentLoaded', () => {
   // Make escapeHtml global for inline handlers
   window.escapeHtml = escapeHtml;
 
+  // ===== THEME TOGGLE =====
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) {
+    const isLight = document.body.classList.contains('light-theme');
+    themeToggle.textContent = isLight ? '🌙' : '☀️';
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+      const lightActive = document.body.classList.contains('light-theme');
+      localStorage.setItem('theme', lightActive ? 'light' : 'dark');
+      themeToggle.textContent = lightActive ? '🌙' : '☀️';
+    });
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'theme') {
+        const isLight = e.newValue === 'light';
+        document.body.classList.toggle('light-theme', isLight);
+        themeToggle.textContent = isLight ? '🌙' : '☀️';
+      }
+    });
+  }
+
   // ===== MOBILE SIDEBAR TOGGLE =====
   const sidebarToggle = document.getElementById('sidebar-toggle');
   const sidebar = document.querySelector('.admin-sidebar');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
 
   if (sidebarToggle) {
     sidebarToggle.addEventListener('click', () => {
       sidebar.classList.toggle('open');
+      sidebarOverlay?.classList.toggle('active');
+    });
+  }
+
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('active');
     });
   }
 
@@ -700,6 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
     link.addEventListener('click', () => {
       if (window.innerWidth <= 768) {
         sidebar.classList.remove('open');
+        sidebarOverlay?.classList.remove('active');
       }
     });
   });

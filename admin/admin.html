@@ -102,13 +102,17 @@
       </div>
     </aside>
 
+    <!-- Sidebar Overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
     <!-- Main Content -->
     <main class="admin-main">
       <div class="admin-topbar">
         <h2 class="topbar-title">Дашборд</h2>
         <div class="topbar-actions">
+          <button class="topbar-btn topbar-btn-outline" id="theme-toggle" title="Переключить тему">☀️</button>
           <a href="../index.html" class="topbar-btn topbar-btn-outline" target="_blank">👁 Открыть сайт</a>
-          <button class="topbar-btn topbar-btn-primary" id="sidebar-toggle" style="display:none">☰ Меню</button>
+          <button class="topbar-btn topbar-btn-primary" id="sidebar-toggle">☰ Меню</button>
         </div>
       </div>
 
@@ -144,41 +148,45 @@
               <h3>Последние заявки</h3>
               <a id="see-all-submissions">Показать все →</a>
             </div>
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Имя</th>
-                  <th>Телефон</th>
-                  <th>Email</th>
-                  <th>Статус</th>
-                  <th>Дата</th>
-                </tr>
-              </thead>
-              <tbody id="recent-submissions-body">
-                <tr><td colspan="5" style="text-align:center; padding:40px; color:var(--admin-text-muted);">Заявок пока нет</td></tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Имя</th>
+                    <th>Телефон</th>
+                    <th>Email</th>
+                    <th>Статус</th>
+                    <th>Дата</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-submissions-body">
+                  <tr><td colspan="5" style="text-align:center; padding:40px; color:var(--admin-text-muted);">Заявок пока нет</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
         <!-- ===== SUBMISSIONS PANEL ===== -->
         <div class="admin-panel" id="panel-submissions">
-          <table class="admin-table" style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--admin-radius); overflow: hidden;">
-            <thead>
-              <tr>
-                <th>Имя</th>
-                <th>Телефон</th>
-                <th>Email</th>
-                <th>Сообщение</th>
-                <th>Статус</th>
-                <th>Дата</th>
-                <th>Действия</th>
-              </tr>
-            </thead>
-            <tbody id="submissions-table-body">
-              <tr><td colspan="7" style="text-align:center; padding:60px; color:var(--admin-text-muted);">Загрузка...</td></tr>
-            </tbody>
-          </table>
+          <div class="table-responsive" style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--admin-radius); overflow: hidden;">
+            <table class="admin-table" style="background: none; border: none; border-radius: 0; overflow: visible;">
+              <thead>
+                <tr>
+                  <th>Имя</th>
+                  <th>Телефон</th>
+                  <th>Email</th>
+                  <th>Сообщение</th>
+                  <th>Статус</th>
+                  <th>Дата</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody id="submissions-table-body">
+                <tr><td colspan="7" style="text-align:center; padding:60px; color:var(--admin-text-muted);">Загрузка...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <!-- ===== HERO EDITOR ===== -->
